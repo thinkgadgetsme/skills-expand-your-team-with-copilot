@@ -699,6 +699,12 @@ body.dark-mode {
   --primary: #4a5fc1;
   --primary-light: #6b7fd4;
   --primary-dark: #3949ab;
+  --secondary: #ff8f00;
+  --secondary-light: #ffb040;
+  --success-light: #1b4d1e;
+  --warning-light: #4a3800;
+  --error-light: #4a1515;
+  --info-light: #0a3038;
 }
 
 body.dark-mode header {
