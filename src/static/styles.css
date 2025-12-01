@@ -567,12 +567,6 @@ footer {
 
 .category-filters,
 .day-filters,
-.time-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
 .category-filter,
 .day-filter,
 .time-filter,
