@@ -472,6 +472,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Function to escape HTML special characters for safe insertion into HTML attributes
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
   // Function to generate share links for an activity
   function getShareLinks(activityName, description) {
     const pageUrl = window.location.href;
@@ -487,19 +494,20 @@ document.addEventListener("DOMContentLoaded", () => {
   // Function to create share button HTML
   function createShareButtonHtml(activityName, description) {
     const links = getShareLinks(activityName, description);
+    const escapedName = escapeHtml(activityName);
     return `
       <div class="share-container">
-        <button class="share-button" aria-label="Share ${activityName}" title="Share this activity">
+        <button class="share-button" aria-label="Share ${escapedName}" title="Share this activity">
           📤
         </button>
         <div class="share-dropdown">
-          <a href="${links.facebook}" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook">
+          <a href="${escapeHtml(links.facebook)}" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook">
             <span class="share-icon">📘</span> Facebook
           </a>
-          <a href="${links.twitter}" target="_blank" rel="noopener noreferrer" aria-label="Share on X (Twitter)">
+          <a href="${escapeHtml(links.twitter)}" target="_blank" rel="noopener noreferrer" aria-label="Share on X (Twitter)">
             <span class="share-icon">🐦</span> X (Twitter)
           </a>
-          <a href="${links.email}" aria-label="Share via Email">
+          <a href="${escapeHtml(links.email)}" aria-label="Share via Email">
             <span class="share-icon">✉️</span> Email
           </a>
         </div>
