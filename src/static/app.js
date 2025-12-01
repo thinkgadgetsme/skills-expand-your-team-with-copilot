@@ -472,6 +472,64 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Function to generate share links for an activity
+  function getShareLinks(activityName, description) {
+    const pageUrl = window.location.href;
+    const shareText = `Check out ${activityName} at Mergington High School! ${description}`;
+    
+    return {
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}&quote=${encodeURIComponent(shareText)}`,
+      twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(pageUrl)}`,
+      email: `mailto:?subject=${encodeURIComponent(`Join ${activityName} at Mergington High School`)}&body=${encodeURIComponent(`${shareText}\n\nLearn more: ${pageUrl}`)}`
+    };
+  }
+
+  // Function to create share button HTML
+  function createShareButtonHtml(activityName, description) {
+    const links = getShareLinks(activityName, description);
+    return `
+      <div class="share-container">
+        <button class="share-button" aria-label="Share ${activityName}" title="Share this activity">
+          📤
+        </button>
+        <div class="share-dropdown">
+          <a href="${links.facebook}" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook">
+            <span class="share-icon">📘</span> Facebook
+          </a>
+          <a href="${links.twitter}" target="_blank" rel="noopener noreferrer" aria-label="Share on X (Twitter)">
+            <span class="share-icon">🐦</span> X (Twitter)
+          </a>
+          <a href="${links.email}" aria-label="Share via Email">
+            <span class="share-icon">✉️</span> Email
+          </a>
+        </div>
+      </div>
+    `;
+  }
+
+  // Function to handle share button click
+  function handleShareButtonClick(event) {
+    event.stopPropagation();
+    const dropdown = event.currentTarget.nextElementSibling;
+    
+    // Close all other open dropdowns
+    document.querySelectorAll('.share-dropdown.show').forEach(d => {
+      if (d !== dropdown) d.classList.remove('show');
+    });
+    
+    // Toggle current dropdown
+    dropdown.classList.toggle('show');
+  }
+
+  // Close share dropdowns when clicking outside
+  document.addEventListener('click', (event) => {
+    if (!event.target.closest('.share-container')) {
+      document.querySelectorAll('.share-dropdown.show').forEach(d => {
+        d.classList.remove('show');
+      });
+    }
+  });
+
   // Function to render a single activity card
   function renderActivityCard(name, details) {
     const activityCard = document.createElement("div");
@@ -519,9 +577,15 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `;
 
+    // Create share button
+    const shareButtonHtml = createShareButtonHtml(name, details.description);
+
     activityCard.innerHTML = `
       ${tagHtml}
-      <h4>${name}</h4>
+      <div class="activity-card-header">
+        <h4>${name}</h4>
+        ${shareButtonHtml}
+      </div>
       <p>${details.description}</p>
       <p class="tooltip">
         <strong>Schedule:</strong> ${formattedSchedule}
@@ -585,6 +649,12 @@ document.addEventListener("DOMContentLoaded", () => {
           openRegistrationModal(name);
         });
       }
+    }
+
+    // Add click handler for share button
+    const shareButton = activityCard.querySelector(".share-button");
+    if (shareButton) {
+      shareButton.addEventListener("click", handleShareButtonClick);
     }
 
     activitiesList.appendChild(activityCard);
